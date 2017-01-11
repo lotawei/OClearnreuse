@@ -106,130 +106,128 @@ id value = [decoder decodeObjectForKey:key];<br>
 return self;<br>
 }<br>
 	
-	常用函数
-	objc_msgSend : 给对象发送消息
-        class_copyMethodList : 遍历某个类所有的方法
-	class_copyIvarList : 遍历某个类所有的成员变量
-	class_..... 这是我们学习runtime必须知道的函数！
-
-	7.oc运行特性的简单运用,即简单函数式编程与响应式编程的实现
-	@interface Person : NSObject
-	//1. 传统方式
-	//- (void)run;
-	//- (void)study;
-	//-(void)sleep;
-	//2.稍微像原始oc的方式
-	//-(Person*)run;
-	//-(Person*)study;
-	//3.最终形态
-	@property(nonatomic,strong) NSString  *name;
-	-(Person* (^) ())runblock;
-	-(Person*  (^) (NSString*studytime))studyblock;
-	-(Person*  (^) (NSString *sleeptime))sleepblock;
+	常用函数<br>
+	objc_msgSend : 给对象发送消息<br>
+        class_copyMethodList : 遍历某个类所有的方法<br>
+	class_copyIvarList : 遍历某个类所有的成员变量<br>
+	class_..... 这是我们学习runtime必须知道的函数！<br>
+* 7.oc运行特性的简单运用,即简单函数式编程与响应式编程的实现<br>
+	@interface Person : NSObject<br>
+	//1. 传统方式<br>
+	//- (void)run;<br>
+	//- (void)study;<br>
+	//-(void)sleep;<br>
+	//2.稍微像原始oc的方式<br>
+	//-(Person*)run;<br>
+	//-(Person*)study;<br>
+	//3.最终形态<br>
+	@property(nonatomic,strong) NSString  *name;<br>
+	-(Person* (^) ())runblock;<br>
+	-(Person*  (^) (NSString*studytime))studyblock;<br>
+	-(Person*  (^) (NSString *sleeptime))sleepblock;<br>
+	<br>
+	+(void )adetails;<br>
+	@implementation Person<br>
+	{<br>
+	    NSInteger   age;<br>
+	    NSString    *pcode;<br>
+	}<br>
+	//-(void)run{<br>
+	//    NSLog(@"i    run over");<br>
+	//}<br>
+	//<br>
+	//-(void)study<br>
+	//{<br>
+	//    NSLog(@"i   study  over");<br>
+	//}<br>
+	//-(void)sleep<br>
+	//{<br>
+	//      NSLog(@"i go sleep");<br>
+	//}<br>
+	//-(Person *)run<br>
+	//{<br>
+	//    NSLog(@"i    run over");<br>
+	//    return  [[Person alloc]init];<br>
+	//}<br>
+	//-(Person *)study{<br>
+	//    NSLog(@"i    study over");<br>
+	//    return  [[Person alloc]init];<br>
+	//}<br>
+	-(Person *(^)())runblock{<br>
+	    Person* (^block)() = ^() {<br>
+        NSLog(@"我跑完步了");<br>
+	        return  self;<br>
+	    };<br>
+	    return  block;<br>
+	}<br>
+	-(Person *(^)(NSString*studytime))studyblock{<br>
+	    Person* (^block)(NSString*studytime) = ^(NSString*studytime) {<br>
+	        NSLog(@"我学习了%@小时，终于学完了",studytime);<br>
+	        return  self;<br>
+    };<br>
+	    return  block;<br>
+	}<br>
+	-(Person *(^)(NSString * sleeptime))sleepblock<br>
+	{<br>
+	    Person *  (^block)(NSString *sleeptime) = ^ (NSString *sleeptime)<br>
+	    {<br>
+	        NSLog(@"我在%@,准时入睡",sleeptime);<br>
+       return  self;<br>
+    };<br>
+	    return  block;<br>
+	}<br>
+	+(void)adetails<br>
+	{<br>
+	    //这里我们获取函数名字<br>
+	    id   classobj  = objc_getClass([@"Person" UTF8String]);<br>
+	    //存储属性的property 属性的个数<br>
+	    unsigned  int   count = 0 ;<br>
+	    //成员变量的个数<br>
+    unsigned   int  icount = 0 ;<br>
+    class_copyPropertyList(classobj, &count);<br>
+	    class_copyIvarList(classobj, &icount);<br>
+	//    objc_property_t  *properties = class_copyPropertyList(classobj, &count);<br>
+	//    Ivar   *ivars =  class_copyIvarList(classobj, &icount);<br>
+	    <br>
+	    //打印属性<br>
+    NSLog(@"属性%d,成员变量%d",count,icount);<br>
+	    <br>
+   <br>
+	}<br>
+	-(NSString *)description{<br>
+	    
+	    <br>
+	    return @"本身的person描述";<br>
+	}<br>
+	-(NSString*) currentdescription<br>
+	{<br>
+	    return @"你没有权限来查看我";<br>	
+         }<br>
 	
-	+(void )adetails;
-	@implementation Person
-	{
-	    NSInteger   age;
-	    NSString    *pcode;
-	}
-	//-(void)run{
-	//    NSLog(@"i    run over");
-	//}
-	//
-	//-(void)study
-	//{
-	//    NSLog(@"i   study  over");
-	//}
-	//-(void)sleep
-	//{
-	//      NSLog(@"i go sleep");
-	//}
-	//-(Person *)run
-	//{
-	//    NSLog(@"i    run over");
-	//    return  [[Person alloc]init];
-	//}
-	//-(Person *)study{
-	//    NSLog(@"i    study over");
-	//    return  [[Person alloc]init];
-	//}
-	-(Person *(^)())runblock{
-	    Person* (^block)() = ^() {
-        NSLog(@"我跑完步了");
-	        return  self;
-	    };
-	    return  block;
-	}
-	-(Person *(^)(NSString*studytime))studyblock{
-	    Person* (^block)(NSString*studytime) = ^(NSString*studytime) {
-	        NSLog(@"我学习了%@小时，终于学完了",studytime);
-	        return  self;
-    };
-	    return  block;
-	}
-	-(Person *(^)(NSString * sleeptime))sleepblock
-	{
-	    Person *  (^block)(NSString *sleeptime) = ^ (NSString *sleeptime)
-	    {
-	        NSLog(@"我在%@,准时入睡",sleeptime);
-       return  self;
-    };
-	    return  block;
-	}
-	+(void)adetails
-	{
-	    //这里我们获取函数名字
-	    id   classobj  = objc_getClass([@"Person" UTF8String]);
-	    //存储属性的property 属性的个数
-	    unsigned  int   count = 0 ;
-	    //成员变量的个数
-    unsigned   int  icount = 0 ;
-    class_copyPropertyList(classobj, &count);
-	    class_copyIvarList(classobj, &icount);
-	//    objc_property_t  *properties = class_copyPropertyList(classobj, &count);
-	//    Ivar   *ivars =  class_copyIvarList(classobj, &icount);
-	    
-	    //打印属性
-    NSLog(@"属性%d,成员变量%d",count,icount);
-	    
-   
-	}
-	-(NSString *)description{
-	    
-	    
-	    return @"本身的person描述";
-	}
-	-(NSString*) currentdescription
-	{
-	    return @"你没有权限来查看我";
-	}
-	
-	-(instancetype)init{
-    self = [super init];
-    Method   orgdescription =  class_getInstanceMethod([Person class], @selector(description));
-	    Method   currentdecription =  class_getInstanceMethod([Person  class], @selector(currentdescription));
-	    method_exchangeImplementations(orgdescription, currentdecription);
-	    
-	    return  self ;
-	}
-	调用       //这种方式就叫传统的函数式编程
-	    Person   * p = [[Person  alloc]init];
-	    
-	    //第三方自动布局的思想就是响应式的 .sd_layout().left(90).right(80)
-	    //模仿实现的最终目标  p.studyblock().runblock().sleepblock()
-	    //1. 先实现这种调用 [[p  run]study];
-	    
-	   // [[p  run] study];
-	    //2. 思考 上面这种实际肯定就是block方式调用的
-	    p.studyblock(@"8").runblock().sleepblock(@"10");
-	    
-	    [Person adetails];
-	  
-	     //这样 就让外部
-	    NSLog(@"%@",p);
-	tips : 
-	一个oc类的+load方法是在app开始运行时首先会被调用执行的方法，也就是说，当app被点击，再被系统加载app程序进入内存后，首先会实例化所 有类到代码或全局区,就会调用类的load方法，如果要给一个类做方法交换，则一般情况放在load方法中来操 作。方法交换一旦完成，则程序运行中全局生效。
+	-(instancetype)init{<br>
+    self = [super init];<br>
+    Method   orgdescription =  class_getInstanceMethod([Person class], @selector(description));<br>
+	    Method   currentdecription =  class_getInstanceMethod([Person  class], @selector(currentdescription));<br>
+	    method_exchangeImplementations(orgdescription, currentdecription);<br>
+	    <br>
+	    return  self ;<br>
+	}<br>
+	调用       //这种方式就叫传统的函数式编程<br>
+	    Person   * p = [[Person  alloc]init];<br>
+	    //第三方自动布局的思想就是响应式的 .sd_layout().left(90).right(80)<br>
+	    //模仿实现的最终目标  p.studyblock().runblock().sleepblock()<br>
+	    //1. 先实现这种调用 [[p  run]study];<br>
+	   // [[p  run] study];<br>
+	    //2. 思考 上面这种实际肯定就是block方式调用的<br>
+	    p.studyblock(@"8").runblock().sleepblock(@"10");<br>
+	    [Person adetails];<br>
+	     //这样 就让外部<br>
+	    NSLog(@"%@",p);<br>
+	tips : <br>
+	一个oc类的+load方法是在app开始运行时首先会被调用执行的方法，也就是说.<br>
+	当app被点击，再被系统加载app程序进入内存后，首先会实例化<br>
+	所有类到代码或全局区,就会调用类的load方法，如果要给一个类做方法交换，则一般情况<br>
+	放在load方法中来操 作。方法交换一旦完成，则程序运行中全局生效。<br>
 
 
 
