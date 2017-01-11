@@ -1,21 +1,21 @@
 # -
-iOS下常用类库整理
-网络处理  AFNetWorking  Alamofire 
-数据库    fmdb          sqlite.swift
-图片异步加载 sdwebimage  kingfisher
-分享       ShareSDK     
-菊花君     MBProgressHUD
-轮播       SDCycleScrollView  自己封装吧
-json解析   MJEXension    SwiftJson
-视频       IJKMediaplayer
-推送       极光          
+iOS下常用类库整理<br>
+* 网络处理  AFNetWorking  Alamofire <br> 
+* 数据库    fmdb          sqlite.swift<br>
+* 图片异步加载 sdwebimage  kingfisher<br>
+* 分享       ShareSDK     <br>
+* 菊花君     MBProgressHUD SVProgressHUD<br>
+* 轮播       SDCycleScrollView  自己封装吧<br>
+* json解析   MJEXension    SwiftJson<br>
+* 视频       IJKMediaplayer<br>
+* 推送       极光  <br>        
 
 
 
-总结学习学习Effective Objective-C 2.0  编写高质量iOS与OS X代码的52个有效方法
-1. 消息与函数调用 区别
-oc 中消息型语言与函数调用  oc其运行的代码由运行环境决定   函数调用 由编译器决定     
-举例说明多态情况下: 	oc                    运行时不管是否多态在运行时去查找这个方法
+总结学习学习Effective Objective-C 2.0  编写高质量iOS与OS X代码的52个有效方法<br>
+* 1. 消息与函数调用 区别<br>
+oc 中消息型语言与函数调用  oc其运行的代码由运行环境决定   函数调用 由编译器决定 <br>    
+举例说明多态情况下: 	oc                    运行时不管是否多态在运行时去查找这个方法<br>
 函数			  是多态的话会运行时按照虚方法表来查到底要执行的方法
 明白oc中所有的对象分配是在堆上的，不是在栈上的,延用c  语言的方式
 NSString    astackstring   错误    而只能这样使用NSString  *str; 去手动分配
